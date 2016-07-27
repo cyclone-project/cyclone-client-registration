@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.keycloak.examples.authenticator.SecretQuestionAuthenticatorFactory
+org.keycloak.examples.domainextension.jpa.ExampleJpaEntityProviderFactory
