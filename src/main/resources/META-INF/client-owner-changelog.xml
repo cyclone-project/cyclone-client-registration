@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <changeSet author="erik.berdoncesbonelo@campus.tu-berlin.de" id="client-owner-1.0">
 
-        <createTable tableName="EXAMPLE_COMPANY">
+        <createTable tableName="CLIENT_OWNER">
             <column name="ID" type="VARCHAR(36)">
                 <constraints nullable="false"/>
             </column>
