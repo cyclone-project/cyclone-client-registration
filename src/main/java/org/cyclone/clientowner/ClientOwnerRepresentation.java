@@ -1,7 +1,9 @@
 package org.cyclone.clientowner;
 
 
-import org.cyclone.clientowner.jpa.ClientOwner;
+import org.cyclone.clientowner.jpa.ClientOwnerEntity;
+import org.keycloak.models.jpa.entities.ClientEntity;
+import org.keycloak.models.jpa.entities.UserEntity;
 
 /**
  * Created by sturgelose on 27/07/2016.
@@ -9,17 +11,17 @@ import org.cyclone.clientowner.jpa.ClientOwner;
 public class ClientOwnerRepresentation {
 
     private String id;
-    private String owner;
-    private String client;
+    private UserEntity owner;
+    private ClientEntity client;
 
     public ClientOwnerRepresentation() {
 
     }
 
-    public ClientOwnerRepresentation(ClientOwner clientOwner) {
-        id = clientOwner.getId();
-        owner = clientOwner.getOwner();
-        client = clientOwner.getClient();
+    public ClientOwnerRepresentation(ClientOwnerEntity clientOwnerEntity) {
+        id = clientOwnerEntity.getId();
+        owner = clientOwnerEntity.getOwner();
+        client = clientOwnerEntity.getClient();
     }
 
     // Get
@@ -27,11 +29,11 @@ public class ClientOwnerRepresentation {
         return id;
     }
 
-    public String getOwner() {
+    public UserEntity getOwner() {
         return owner;
     }
 
-    public String getClient() { return client; }
+    public ClientEntity getClient() { return client; }
 
     // Set
 
@@ -39,10 +41,10 @@ public class ClientOwnerRepresentation {
         this.id = id;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(UserEntity owner) {
         this.owner = owner;
     }
 
-    public void setClient(String client) { this.client = client; }
+    public void setClient(ClientEntity client) { this.client = client; }
 
 }
