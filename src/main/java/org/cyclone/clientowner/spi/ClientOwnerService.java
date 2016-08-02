@@ -1,18 +1,19 @@
 package org.cyclone.clientowner.spi;
 
 
-import org.cyclone.clientowner.ClientOwnerRepresentation;
-import org.cyclone.clientowner.jpa.ClientOwner;
 import org.keycloak.provider.Provider;
 import org.keycloak.representations.idm.ClientRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
+
+import java.util.List;
 
 /**
  * Created by sturgelose on 27/07/2016.
  */
 public interface ClientOwnerService extends Provider {
 
-    ClientOwnerRepresentation findOwner(String clientId);
+    UserRepresentation findOwner(String clientId);
 
-    ClientOwner addClient(ClientRepresentation client);
+    List<ClientRepresentation> listClients(String clientId);
 
 }
