@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class ExampleJpaEntityProvider implements JpaEntityProvider {
+public class ClientOwnerEntityProvider implements JpaEntityProvider {
 
     @Override
     public List<Class<?>> getEntities() {
-        return Collections.<Class<?>>singletonList(ClientOwner.class);
+        return Collections.<Class<?>>singletonList(ClientOwnerEntity.class);
     }
 
     @Override
@@ -24,6 +24,6 @@ public class ExampleJpaEntityProvider implements JpaEntityProvider {
 
     @Override
     public String getFactoryId() {
-        return ExampleJpaEntityProviderFactory.ID;
+        return ClientOwnerEntityProviderFactory.ID;
     }
 }

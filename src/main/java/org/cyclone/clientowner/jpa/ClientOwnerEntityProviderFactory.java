@@ -6,13 +6,13 @@ import org.keycloak.connections.jpa.entityprovider.JpaEntityProviderFactory;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 
-public class ExampleJpaEntityProviderFactory implements JpaEntityProviderFactory {
+public class ClientOwnerEntityProviderFactory implements JpaEntityProviderFactory {
 
 	protected static final String ID = "client-owner-entity-provider";
 	
     @Override
     public JpaEntityProvider create(KeycloakSession session) {
-        return new ExampleJpaEntityProvider();
+        return new ClientOwnerEntityProvider();
     }
 
     @Override
