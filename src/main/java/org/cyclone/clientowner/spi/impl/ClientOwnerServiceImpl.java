@@ -1,13 +1,19 @@
 package org.cyclone.clientowner.spi.impl;
 
+import org.cyclone.clientowner.jpa.ClientOwnerEntity;
 import org.cyclone.clientowner.spi.ClientOwnerService;
 import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+
+import org.keycloak.models.jpa.entities.ClientEntity;
+import org.keycloak.models.jpa.entities.RealmEntity;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.services.resources.admin.ClientsResource;
 
 import javax.persistence.EntityManager;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,8 +44,22 @@ public class ClientOwnerServiceImpl implements ClientOwnerService {
     }
 
     @Override
-    public List<ClientRepresentation> listClients(String clientId) {
-        return null;
+    public ClientsResource listClients() {
+
+        RealmEntity realm = getEntityManager().find(RealmEntity.class, getRealm().getId());
+
+        List<ClientEntity> companyEntities = getEntityManager()
+                .createNamedQuery("getClientsByRealm", ClientEntity.class)
+                .setParameter("realm", realm)
+                .getResultList();
+
+        List<ClientRepresentation> respresentations = new LinkedList<>();
+        for (ClientEntity entity : companyEntities) {
+            ClientEntity test = entity;
+        }
+        ClientsResource result = null;
+
+        return result;
     }
 
 
