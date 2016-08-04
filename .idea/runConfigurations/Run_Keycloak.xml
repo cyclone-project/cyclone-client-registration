@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Keycloak" type="BashConfigurationType" factoryName="Bash">
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="INTERPRETER_PATH" value="/bin/bash" />
+    <option name="WORKING_DIRECTORY" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <option name="SCRIPT_NAME" value="bin/deploy.sh" />
+    <option name="PARAMETERS" value="" />
+    <module name="" />
+    <envs />
+    <method>
+      <option name="Make" enabled="false" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Build" run_configuration_type="MavenRunConfiguration" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Remove module" run_configuration_type="BashConfigurationType" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Deploy" run_configuration_type="BashConfigurationType" />
+    </method>
+  </configuration>
+</component>
