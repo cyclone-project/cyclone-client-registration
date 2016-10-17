@@ -1,0 +1,27 @@
+
+keycloak:
+  image: jboss/keycloak-mysql
+  ports:
+  - "8080:8080"
+  - "8787:8787"
+  volumes:
+  - ./target:/opt/jboss/target
+  - ./configuration:/opt/jboss/keycloak/standalone/configuration
+  links:
+    - mysql:mysql
+  command: ["-b", "0.0.0.0", "--debug"]
+
+mysql:
+  image: mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: root_password
+    MYSQL_DATABASE: keycloak
+    MYSQL_USER: keycloak
+    MYSQL_PASSWORD: password
+
+phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  ports:
+      - "8081:80"
+  links:
+    - mysql:db
