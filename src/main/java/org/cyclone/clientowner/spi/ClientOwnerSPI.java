@@ -20,11 +20,11 @@ public class ClientOwnerSPI implements Spi {
 
     @Override
     public Class<? extends Provider> getProviderClass() {
-        return ClientOwnerService.class;
+        return ClientOwnerProvider.class;
     }
 
     @Override
     public Class<? extends ProviderFactory> getProviderFactoryClass() {
-        return ClientOwnerServiceProviderFactory.class;
+        return ClientOwnerProviderFactory.class;
     }
 }

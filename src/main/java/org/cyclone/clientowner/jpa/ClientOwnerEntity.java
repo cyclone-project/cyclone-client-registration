@@ -1,16 +1,38 @@
 package org.cyclone.clientowner.jpa;
 
+import org.keycloak.models.ClientModel;
+import org.keycloak.models.UserModel;
 import org.keycloak.models.jpa.entities.ClientEntity;
 import org.keycloak.models.jpa.entities.UserEntity;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "CLIENT_OWNER")
+@Table(name = "CLIENT_OWNER",
+        uniqueConstraints = {@UniqueConstraint(
+        columnNames = {"ID"}
+)})
+
 @NamedQueries({
         @NamedQuery(
                 name = "findByRealm",
-                query = "select co from ClientOwnerEntity co where co.realmId = :realmId"
+                query = "select co from ClientOwnerModel co where co.realmId = :realmId"
+        ),
+        @NamedQuery(
+                name = "getClientOwnerById",
+                query = "select co from ClientOwnerModel co where co.id = :id and co.realmId = :realmId"
+        ),
+        @NamedQuery(
+                name = "getClientOwnerByOwnerAndClient",
+                query = "select co from ClientOwnerModel co where co.owner = :owner and co.client = :client and co.realmId = :realmId"
+        ),
+        @NamedQuery(
+                name = "getClientOwnerByOwner",
+                query = "select co from ClientOwnerModel co where co.owner = :owner  and co.realmId = :realmId"
+        ),
+        @NamedQuery(
+                name = "getClientOwnerByClient",
+                query = "select co from ClientOwnerModel co where  co.client = :client and co.realmId = :realmId"
         )
 })
 public class ClientOwnerEntity {
@@ -18,8 +40,12 @@ public class ClientOwnerEntity {
     // Column definitions
 
     @Id
-    @Column(name = "ID")
-    private String id;
+    @Column(
+            name = "ID",
+            length = 36
+    )
+    @Access(AccessType.PROPERTY)
+    protected String id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OWNER")
@@ -38,12 +64,12 @@ public class ClientOwnerEntity {
         return id;
     }
 
-    public UserEntity getOwner() {
-        return owner;
+    public String getOwnerId() {
+        return owner.getId();
     }
 
-    public ClientEntity getClient() {
-        return client;
+    public String getClientId() {
+        return client.getId();
     }
 
     public String getRealmId() {

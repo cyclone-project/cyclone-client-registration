@@ -1,7 +1,7 @@
 package org.cyclone.clientowner.spi.impl;
 
-import org.cyclone.clientowner.spi.ClientOwnerService;
-import org.cyclone.clientowner.spi.ClientOwnerServiceProviderFactory;
+import org.cyclone.clientowner.spi.ClientOwnerProvider;
+import org.cyclone.clientowner.spi.ClientOwnerProviderFactory;
 import org.keycloak.Config;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
@@ -9,10 +9,10 @@ import org.keycloak.models.KeycloakSessionFactory;
 /**
  * Created by sturgelose on 27/07/2016.
  */
-public class ClientOwnerServiceProviderFactoryImpl implements ClientOwnerServiceProviderFactory {
+public class ClientOwnerProviderFactoryImpl implements ClientOwnerProviderFactory {
     @Override
-    public ClientOwnerService create(KeycloakSession session) {
-        return new ClientOwnerServiceImpl(session);
+    public ClientOwnerProvider create(KeycloakSession session) {
+        return new ClientOwnerProviderImpl(session);
     }
 
     @Override
