@@ -5,7 +5,7 @@ keycloak:
   - "8080:8080"
   - "8787:8787"
   volumes:
-  - ./target:/opt/jboss/target
+  - ./target:/opt/jboss/keycloak/target
   - ./configuration:/opt/jboss/keycloak/standalone/configuration
   links:
     - mysql:mysql
