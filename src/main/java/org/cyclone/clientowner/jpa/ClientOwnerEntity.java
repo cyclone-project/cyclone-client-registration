@@ -8,10 +8,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "CLIENT_OWNER")
 @NamedQueries({
-    @NamedQuery(
-            name = "findByRealm",
-            query = "select co from ClientOwnerEntity co where co.realmId = :realmId"
-    )
+        @NamedQuery(
+                name = "findByRealm",
+                query = "select co from ClientOwnerEntity co where co.realmId = :realmId"
+        )
 })
 public class ClientOwnerEntity {
 
@@ -22,11 +22,11 @@ public class ClientOwnerEntity {
     private String id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="OWNER")
+    @JoinColumn(name = "OWNER")
     private UserEntity owner;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CLIENT")
+    @JoinColumn(name = "CLIENT")
     private ClientEntity client;
 
     @Column(name = "REALM_ID", nullable = false)
@@ -42,7 +42,9 @@ public class ClientOwnerEntity {
         return owner;
     }
 
-    public ClientEntity getClient() { return client; }
+    public ClientEntity getClient() {
+        return client;
+    }
 
     public String getRealmId() {
         return realmId;
@@ -58,10 +60,11 @@ public class ClientOwnerEntity {
         this.owner = owner;
     }
 
-    public void setClient(ClientEntity client) { this.client = client; }
+    public void setClient(ClientEntity client) {
+        this.client = client;
+    }
 
     public void setRealmId(String realmId) {
         this.realmId = realmId;
     }
-
 }

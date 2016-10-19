@@ -1,10 +1,9 @@
 package org.cyclone.clientowner.rest;
 
+import org.cyclone.clientowner.jpa.ClientOwnerEntity;
+import org.cyclone.clientowner.spi.ClientOwnerService;
 import org.jboss.resteasy.annotations.cache.NoCache;
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.ClientTemplateModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.UserProvider;
+import org.keycloak.models.*;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.models.utils.RepresentationToModel;
 import org.keycloak.representations.idm.ClientRepresentation;
@@ -20,17 +19,21 @@ public class ClientOwnerRestResource {
 
     private final KeycloakSession session;
     private final AuthenticationManager.AuthResult auth;
+    private final UserModel user;
 
     public ClientOwnerRestResource(KeycloakSession session) {
         this.session = session;
 
         // Generate authentication
         this.auth = new AppAuthManager().authenticateBearerToken(session, session.getContext().getRealm());
+
+        // Save the user variable if we got proper authentication
+        this.user = this.auth == null ? null : this.auth.getUser();
     }
 
     /**
-     * Endpoint to create clients
-     * auth/realm/{realm}/client-registration/registerclient/
+     * Endpoint to list all clients of a user
+     * auth/realm/{realm}/client-registration/
      *
      * @return ClientRepresentation of the new client
      */
@@ -38,7 +41,7 @@ public class ClientOwnerRestResource {
     @Path("")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getClientResource() {
+    public Response getClientOwnerResource() {
 
         ClientTemplateModel clientTemplate = null;
         for (ClientTemplateModel template: session.getContext().getRealm().getClientTemplates()) {
@@ -58,26 +61,83 @@ public class ClientOwnerRestResource {
         return Response.ok(representation).build();
     }
 
+    /**
+     * Endpoint to create clients
+     * auth/realm/{realm}/client-registration/
+     *
+     * @return ClientRepresentation of the new client
+     */
     @POST
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public Response setClientResource(ClientRepresentation clientRepresentation) {
+    public Response setClientOwnerResource(ClientRepresentation clientRepresentation) {
         ClientModel client = RepresentationToModel.createClient(session, session.getContext().getRealm(), clientRepresentation, true);
         return null;
     }
 
     /**
-     * Auth endpoint to create clients
-     * auth/realm/{realm}/client-registration/registerclient-auth/
+     * Endpoint to update clients
+     * auth/realm/{realm}/client-registration/
      *
      * @return ClientRepresentation of the new client
      */
-    @Path("registerclient-auth")
-    public ClientOwnerResource getClientResourceAuthenticated() {
+    @PUT
+    @Path("")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateClientOwnerResource(ClientRepresentation clientRepresentation) {
+        return null;
+    }
+
+    /**
+     * Endpoint to delete clients
+     * auth/realm/{realm}/client-registration/
+     *
+     * @return ClientRepresentation of the new client
+     */
+    @DELETE
+    @Path("")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteClientOwnerResource(ClientRepresentation clientRepresentation) {
+        return null;
+    }
+
+    /**
+     * Endpoint to get a specific client of a user
+     * auth/realm/{realm}/client-registration/{clientId}
+     *
+     * @return ClientRepresentation of the new client
+     */
+    @GET
+    @Path("{id}")
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getClientOwnerResourceList(String clientId) {
         checkRealmAdmin();
-        return new ClientOwnerResource(session);
+        ClientOwnerEntity match = getClientOwnership(clientId);
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Example on how to use authentication
+     */
+    @Path("registerclient-auth")
+    public Response getClientResourceAuthenticated() {
+        checkRealmAdmin();
+        return null;
     }
 
     /**
@@ -89,6 +149,21 @@ public class ClientOwnerRestResource {
         } else if (auth.getToken().getRealmAccess() == null || !auth.getToken().getRealmAccess().isUserInRole("admin")) {
             throw new ForbiddenException("Does not have realm admin role");
         }
+    }
+
+    /**
+     * Checks that a client is under the ownership of the user executing the request
+     * @param clientId Id of the client to matched against the user
+     * @return Entity representing the match
+     */
+    private ClientOwnerEntity getClientOwnership(String clientId) {
+        ClientOwnerEntity match = session.getProvider(ClientOwnerService.class).getClientOwnerMatch(clientId, user.getId());
+
+        if (match == null){
+            throw new NotFoundException("Couldn't find the specified client for this user owner");
+        }
+
+        return match;
     }
 
 }
