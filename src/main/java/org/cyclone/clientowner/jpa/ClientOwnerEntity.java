@@ -16,23 +16,23 @@ import javax.persistence.*;
 @NamedQueries({
         @NamedQuery(
                 name = "findByRealm",
-                query = "select co from ClientOwnerModel co where co.realmId = :realmId"
+                query = "select co from ClientOwnerEntity co where co.realmId = :realmId"
         ),
         @NamedQuery(
                 name = "getClientOwnerById",
-                query = "select co from ClientOwnerModel co where co.id = :id and co.realmId = :realmId"
+                query = "select co from ClientOwnerEntity co where co.id = :id and co.realmId = :realmId"
         ),
         @NamedQuery(
                 name = "getClientOwnerByOwnerAndClient",
-                query = "select co from ClientOwnerModel co where co.owner = :owner and co.client = :client and co.realmId = :realmId"
+                query = "select co from ClientOwnerEntity co where co.owner = :owner and co.client = :client and co.realmId = :realmId"
         ),
         @NamedQuery(
                 name = "getClientOwnerByOwner",
-                query = "select co from ClientOwnerModel co where co.owner = :owner  and co.realmId = :realmId"
+                query = "select co from ClientOwnerEntity co where co.owner = :owner  and co.realmId = :realmId"
         ),
         @NamedQuery(
                 name = "getClientOwnerByClient",
-                query = "select co from ClientOwnerModel co where  co.client = :client and co.realmId = :realmId"
+                query = "select co from ClientOwnerEntity co where  co.client = :client and co.realmId = :realmId"
         )
 })
 public class ClientOwnerEntity {
