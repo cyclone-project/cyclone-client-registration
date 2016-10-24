@@ -185,7 +185,7 @@ public class ClientOwnerProviderImpl implements ClientOwnerProvider {
 
         List<ClientOwnerEntity> clientOwnerEntities = getEntityManager()
                 .createNamedQuery("getClientOwnerByOwner", ClientOwnerEntity.class)
-                .setParameter("owner", findClientOwnerEntitybyId(owner.getId()))
+                .setParameter("owner", findUserEntitybyId(owner.getId()))
                 .setParameter("realmId", getRealm().getId())
                 .getResultList();
 
