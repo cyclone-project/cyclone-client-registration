@@ -1,7 +1,6 @@
 package org.cyclone.clientowner.jpa;
 
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.UserModel;
+import org.hibernate.annotations.GenericGenerator;
 import org.keycloak.models.jpa.entities.ClientEntity;
 import org.keycloak.models.jpa.entities.UserEntity;
 
@@ -45,6 +44,8 @@ public class ClientOwnerEntity {
             length = 36
     )
     @Access(AccessType.PROPERTY)
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     protected String id;
 
     @OneToOne(fetch = FetchType.LAZY)

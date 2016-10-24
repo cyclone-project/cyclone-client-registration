@@ -5,6 +5,7 @@ import org.cyclone.clientowner.spi.ClientOwnerProvider;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModelDuplicateException;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.models.utils.RepresentationToModel;
@@ -53,7 +54,7 @@ public class ClientOwnerRestResource {
 
         // Generate all the representations for each of the clients
         List<ClientRepresentation> clientRepresentations = new ArrayList<>();
-        for (ClientOwner clientOwner: clientOwners) {
+        for (ClientOwner clientOwner : clientOwners) {
             clientRepresentations.add(ModelToRepresentation.toRepresentation(cop().getClient(clientOwner)));
         }
 
@@ -70,17 +71,33 @@ public class ClientOwnerRestResource {
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @NoCache
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({
+            MediaType.APPLICATION_JSON,
+            MediaType.TEXT_PLAIN
+    })
     public Response setClientOwnerResource(final @Context UriInfo uriInfo, ClientRepresentation clientRepresentation) {
 
         checkRealmAdmin();
 
-        // Create client from the representation
-        ClientModel client = RepresentationToModel.createClient(session, session.getContext().getRealm(), clientRepresentation, true);
+        ClientModel client;
+        try {
+            // Create client from the representation
+            client = RepresentationToModel.createClient(session, session.getContext().getRealm(), clientRepresentation, true);
+            client.updateClient();
+
+        } catch (ModelDuplicateException e) {
+            throw new BadRequestException(
+                    String.format("Cannot create client. Client with ID %s already exists.", clientRepresentation.getClientId()),
+                    Response.status(Response.Status.BAD_REQUEST)
+                            .type(MediaType.TEXT_PLAIN)
+                            .entity(String.format("Cannot create client. Client with ID %s already exists.", clientRepresentation.getClientId())).build(),
+                    e
+            );
+        }
 
         // Create the model and assign parameters
         ClientOwner newClientOwner = new ClientOwner();
-        newClientOwner.setClient(clientRepresentation.getId());
+        newClientOwner.setClient(client.getId());
         newClientOwner.setOwner(this.user.getId()); //Assign it to the actual user
 
         cop().addClientOwner(newClientOwner);
@@ -135,7 +152,7 @@ public class ClientOwnerRestResource {
     @Path("{clientId}")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getClientOwnerResource(String clientId) {
+    public Response getClientOwnerResource(@PathParam("clientId") String clientId) {
         checkRealmAdmin();
         checkClientOwnership(clientId);
 
@@ -160,6 +177,7 @@ public class ClientOwnerRestResource {
 
     /**
      * Checks that a client is under the ownership of the user executing the request
+     *
      * @param clientId ID of the client to check the ownership of
      */
     private void checkClientOwnership(String clientId) {
@@ -176,7 +194,7 @@ public class ClientOwnerRestResource {
         }
     }
 
-    private ClientOwnerProvider cop () {
+    private ClientOwnerProvider cop() {
         return session.getProvider(ClientOwnerProvider.class);
     }
 

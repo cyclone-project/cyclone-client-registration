@@ -43,6 +43,6 @@ public class ClientOwner {
         this.ownerId = ownerId;
     }
 
-    public void setClient(String clientId) { this.clientId = this.clientId; }
+    public void setClient(String clientId) { this.clientId = clientId; }
 
 }

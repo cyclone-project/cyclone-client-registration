@@ -6,9 +6,11 @@ import org.cyclone.clientowner.spi.ClientOwnerProvider;
 import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.models.*;
 import org.keycloak.models.jpa.entities.ClientEntity;
+import org.keycloak.models.jpa.entities.RealmEntity;
 import org.keycloak.models.jpa.entities.UserEntity;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +38,12 @@ public class ClientOwnerProviderImpl implements ClientOwnerProvider {
 
 
     private ClientEntity findClientEntitybyId(String clientId) {
-
+        getEntityManager().setFlushMode(FlushModeType.COMMIT);
+        getEntityManager().flush();
         List<ClientEntity> clients = getEntityManager()
                 .createNamedQuery("getClientById", ClientEntity.class)
                 .setParameter("id", clientId)
-                .setParameter("realmId", getRealm().getId())
+                .setParameter("realm", getRealm().getId())
                 .getResultList();
 
         // We should find only one
@@ -95,8 +98,15 @@ public class ClientOwnerProviderImpl implements ClientOwnerProvider {
 
     @Override
     public ClientOwner addClientOwner(ClientOwner clientOwner) {
-        //TODO To be implemented: we need to assign the actual realm. Also, what about the ID assignement?
-        return null;
+
+        getEntityManager().flush();
+        ClientOwnerEntity clientOwnerEntity = new ClientOwnerEntity();
+        clientOwnerEntity.setClient(findClientEntitybyId(clientOwner.getClientid()));
+        clientOwnerEntity.setOwner(findUserEntitybyId(clientOwner.getOwnerId()));
+        clientOwnerEntity.setRealmId(getRealm().getId());
+        getEntityManager().persist(clientOwnerEntity);
+        clientOwner.setId(clientOwnerEntity.getId());
+        return clientOwner;
     }
 
     @Override
@@ -202,7 +212,7 @@ public class ClientOwnerProviderImpl implements ClientOwnerProvider {
 
         List<ClientOwnerEntity> clientOwnerEntities = getEntityManager()
                 .createNamedQuery("getClientOwnerByOwnerAndClient", ClientOwnerEntity.class)
-                .setParameter("owner", findClientOwnerEntitybyId(owner.getId()))
+                .setParameter("owner", findUserEntitybyId(owner.getId()))
                 .setParameter("client", findClientEntitybyId(client.getId()))
                 .setParameter("realmId", getRealm().getId())
                 .getResultList();
