@@ -103,7 +103,7 @@ public class ClientOwnerRestResource {
         cop().addClientOwner(newClientOwner);
 
         // Redirect the user to the new created content
-        return Response.created(uriInfo.getAbsolutePathBuilder().path(client.getId()).build()).build();
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(clientRepresentation.getId()).build()).build();
     }
 
     /**

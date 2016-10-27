@@ -5,6 +5,7 @@ import org.cyclone.clientowner.jpa.ClientOwnerEntity;
 import org.cyclone.clientowner.spi.ClientOwnerProvider;
 import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.models.*;
+import org.keycloak.models.jpa.ClientAdapter;
 import org.keycloak.models.jpa.entities.ClientEntity;
 import org.keycloak.models.jpa.entities.RealmEntity;
 import org.keycloak.models.jpa.entities.UserEntity;
@@ -123,7 +124,12 @@ public class ClientOwnerProviderImpl implements ClientOwnerProvider {
 
     @Override
     public ClientModel getClient(ClientOwner clientOwner) {
-        return session.getContext().getRealm().getClientById(clientOwner.getOwnerId());
+        return new ClientAdapter(
+                session.getContext().getRealm(),
+                getEntityManager(),
+                session,
+                getEntityManager().find(ClientEntity.class, clientOwner.getClientid())
+        );
     }
 
     @Override
