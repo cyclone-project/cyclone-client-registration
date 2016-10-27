@@ -117,11 +117,25 @@ public class ClientOwnerRestResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateClientOwnerResource(ClientRepresentation clientRepresentation) {
+    public Response updateClientOwnerResource(@PathParam("clientId") String clientId, ClientRepresentation clientRepresentation) {
         checkRealmAdmin();
-        checkClientOwnership(clientRepresentation.getClientId());
-        //TODO To be implemented
-        return null;
+        checkClientOwnership(clientId);
+
+        ClientModel client = session.getContext().getRealm().getClientByClientId(clientId);
+
+        if (client != null) {
+            try {
+                RepresentationToModel.updateClient(clientRepresentation, client);
+            }
+            catch (Exception e) {
+                throw new BadRequestException();
+            }
+            return Response.ok().build();
+        }
+        else
+        {
+            throw new NotFoundException("Couldn't find the specified client.");
+        }
     }
 
     /**
@@ -182,7 +196,7 @@ public class ClientOwnerRestResource {
      */
     private void checkClientOwnership(String clientId) {
 
-        ClientModel client = session.getContext().getRealm().getClientById(clientId);
+        ClientModel client = session.getContext().getRealm().getClientByClientId(clientId);
 
         if (client == null) {
             throw new NotFoundException("Couldn't find the specified client.");
