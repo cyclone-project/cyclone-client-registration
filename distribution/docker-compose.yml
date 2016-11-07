@@ -1,0 +1,15 @@
+
+keycloak:
+  image: cyclone/keycloak-mysql
+  ports:
+  - "8080:8080"
+  links:
+    - mysql:mysql
+
+mysql:
+  image: mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: root_password
+    MYSQL_DATABASE: keycloak
+    MYSQL_USER: keycloak
+    MYSQL_PASSWORD: password

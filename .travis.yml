@@ -1,0 +1,34 @@
+sudo: required
+
+language: java
+
+cache:
+  directories:
+    - $HOME/.m2
+
+env:
+  global:
+    - MAVEN_SKIP_RC=true
+    - MAVEN_OPTS="-Xms512m -Xmx2048m"
+
+services:
+  - docker
+
+jdk:
+  - oraclejdk8
+
+before_install:
+  - docker pull jboss/keycloak-mysql
+
+install:
+  - travis_wait 60 mvn install -Pdistribution -DskipTests=true -B -V -q
+  - docker build distribution/Dockerfile -t cyclone/keycloak-mysql .
+
+before_script:
+  - export MAVEN_SKIP_RC=true
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push cyclone/keycloak-mysql;
+    fi
