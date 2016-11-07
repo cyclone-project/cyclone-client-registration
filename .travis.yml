@@ -22,7 +22,7 @@ before_install:
 
 install:
   - travis_wait 60 mvn install -Pdistribution -DskipTests=true -B -V -q
-  - docker build --file=distribution/Dockerfile -t cyclone/keycloak-mysql .
+  - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-mysql .
 
 before_script:
   - export MAVEN_SKIP_RC=true
@@ -30,5 +30,5 @@ before_script:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push cyclone/keycloak-mysql;
+    docker push cyclone-project/keycloak-mysql;
     fi
