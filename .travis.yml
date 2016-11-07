@@ -22,7 +22,7 @@ before_install:
 
 install:
   - travis_wait 60 mvn install -Pdistribution -DskipTests=true -B -V -q
-  - docker build distribution/Dockerfile -t cyclone/keycloak-mysql .
+  - docker build --file=distribution/Dockerfile -t cyclone/keycloak-mysql .
 
 before_script:
   - export MAVEN_SKIP_RC=true
