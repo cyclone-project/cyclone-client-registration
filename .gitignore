@@ -1,5 +1,6 @@
 configuration/standalone_xml_history/
 data/
+*.uml
 
 # Intellij
 ###################
