@@ -20,9 +20,9 @@ public interface ClientOwnerProvider extends Provider {
 
     ClientOwner addClientOwner(ClientOwner clientOwner);
 
-    ClientOwner updateClientOwner(ClientOwner clientOwner);
+    //ClientOwner updateClientOwner(ClientOwner clientOwner);
 
-    ClientOwner deleteClientOwner(ClientOwner clientOwner);
+    boolean deleteClientOwner(ClientOwner clientOwner);
 
 
     // Get client of a clientOwner

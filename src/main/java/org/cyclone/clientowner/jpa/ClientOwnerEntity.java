@@ -32,7 +32,12 @@ import javax.persistence.*;
         @NamedQuery(
                 name = "getClientOwnerByClient",
                 query = "select co from ClientOwnerEntity co where  co.client = :client and co.realmId = :realmId"
+        ),
+        @NamedQuery(
+                name = "deleteClientOwner",
+                query = "delete from ClientOwnerEntity co where co.owner = :owner and co.client = :client and co.realmId = :realmId"
         )
+
 })
 public class ClientOwnerEntity {
 

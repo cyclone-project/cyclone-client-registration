@@ -111,15 +111,15 @@ public class ClientOwnerProviderImpl implements ClientOwnerProvider {
     }
 
     @Override
-    public ClientOwner updateClientOwner(ClientOwner clientOwner) {
-        //TODO To be implemented
-        return null;
-    }
-
-    @Override
-    public ClientOwner deleteClientOwner(ClientOwner clientOwner) {
-        //TODO To be implemented
-        return null;
+    public boolean deleteClientOwner(ClientOwner clientOwner) {
+        ClientOwnerEntity co = findClientOwnerEntitybyId(clientOwner.getId());
+        getEntityManager()
+                .createNamedQuery("deleteClientOwner")
+                .setParameter("owner", findUserEntitybyId(co.getOwnerId()))
+                .setParameter("client", findClientEntitybyId(co.getClientId()))
+                .setParameter("realmId", co.getRealmId())
+                .executeUpdate();
+        return true;
     }
 
     @Override

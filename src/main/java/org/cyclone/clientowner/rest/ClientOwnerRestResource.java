@@ -3,10 +3,7 @@ package org.cyclone.clientowner.rest;
 import org.cyclone.clientowner.ClientOwner;
 import org.cyclone.clientowner.spi.ClientOwnerProvider;
 import org.jboss.resteasy.annotations.cache.NoCache;
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.ModelDuplicateException;
-import org.keycloak.models.UserModel;
+import org.keycloak.models.*;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.models.utils.RepresentationToModel;
 import org.keycloak.representations.idm.ClientRepresentation;
@@ -139,7 +136,8 @@ public class ClientOwnerRestResource {
     }
 
     /**
-     * Endpoint to delete clients
+     * Endpoint to delete clients-owner relationships. It will delete the relationship but the client and
+     * the owner will still be available. As a summary, it just deletes the access to the client.
      * auth/realm/{realm}/client-registration/
      *
      * @return ClientRepresentation of the new client
@@ -149,11 +147,32 @@ public class ClientOwnerRestResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteClientOwnerResource(ClientRepresentation clientRepresentation) {
+    public Response deleteClientOwnerResource(@PathParam("clientId") String clientId) {
         checkRealmAdmin();
-        checkClientOwnership(clientRepresentation.getClientId());
-        //TODO To be implemented
-        return null;
+        checkClientOwnership(clientId);
+
+        // Get the client
+        ClientModel client = session.getContext().getRealm().getClientByClientId(clientId);
+
+        if (client != null) {
+            boolean deleted = false;
+            try {
+                ClientOwner co = cop().getClientOwnerbyClientandOwner(client, auth.getUser());
+                 deleted = session.getProvider(ClientOwnerProvider.class).deleteClientOwner(co);
+            }
+            catch (Exception e) {
+                throw new BadRequestException();
+            }
+
+            if (deleted)
+                return Response.ok().build();
+            else
+                throw new NotFoundException("Couldn't find the specified client.");
+        }
+        else
+        {
+            throw new NotFoundException("Couldn't find the specified client.");
+        }
     }
 
     /**
@@ -171,11 +190,17 @@ public class ClientOwnerRestResource {
         checkClientOwnership(clientId);
 
         // Get the client
-        ClientModel client = session.getContext().getRealm().getClientById(clientId);
+        ClientModel client = session.getContext().getRealm().getClientByClientId(clientId);
 
-        // Generate the representation from the client
-        ClientRepresentation clientRepresentation = ModelToRepresentation.toRepresentation(client);
-        return Response.ok(clientRepresentation).build();
+        if (client != null) {
+            // Generate the representation from the client
+            ClientRepresentation clientRepresentation = ModelToRepresentation.toRepresentation(client);
+            return Response.ok(clientRepresentation).build();
+        }
+        else
+        {
+            throw new NotFoundException("Couldn't find the specified client.");
+        }
     }
 
     /**
@@ -185,14 +210,14 @@ public class ClientOwnerRestResource {
         if (auth == null) {
             throw new NotAuthorizedException("Bearer");
         } else if (auth.getToken().getRealmAccess() == null || !auth.getToken().getRealmAccess().isUserInRole("admin")) {
-            throw new ForbiddenException("Does not have realm admin role");
+            throw new NotAuthorizedException("Does not have realm admin role");
         }
     }
 
     /**
      * Checks that a client is under the ownership of the user executing the request
      *
-     * @param clientId ID of the client to check the ownership of
+     * @param clientId clientID (name) of the client to check the ownership of
      */
     private void checkClientOwnership(String clientId) {
 
@@ -202,8 +227,12 @@ public class ClientOwnerRestResource {
             throw new NotFoundException("Couldn't find the specified client.");
         }
 
-
-        if (cop().getClientOwnerbyClientandOwner(client, this.user) == null) {
+        try {
+            if (cop().getClientOwnerbyClientandOwner(client, this.user) == null) {
+                throw new NotFoundException("Couldn't find an ownership relationship over the selected client.");
+            }
+        }
+        catch (ModelException e) {
             throw new NotFoundException("Couldn't find an ownership relationship over the selected client.");
         }
     }
