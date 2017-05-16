@@ -1,4 +1,4 @@
-FROM jboss/keycloak-mysql
+FROM jboss/keycloak-mysql:3.0.0.Final
 
 EXPOSE 8080
 
@@ -10,8 +10,6 @@ ADD ./target /opt/jboss/keycloak/cyclone
 RUN /opt/jboss/keycloak/bin/jboss-cli.sh \
             --command="module add --name=org.cyclone.clientowner \
             --resources=/opt/jboss/keycloak/cyclone/cyclone-clientowner.jar \
-            --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-services,org.keycloak.keycloak-model-jpa,org.keycloak.keycloak-server-spi,javax.ws.rs.api,javax.persistence.api,org.hibernate,org.javassist"
-
-RUN rm -rf /opt/jboss/keycloak/cyclone
+            --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,javax.ws.rs.api"
 
 USER jboss

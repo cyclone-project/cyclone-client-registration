@@ -53,7 +53,7 @@
             </formatters>
             <handlers>
                 <file-handler name="file" formatter="json-formatter" relative-to="jboss.server.data.dir"
-                              path="audit-log.log"/>
+                          path="audit-log.log"/>
             </handlers>
             <logger log-boot="true" log-read-only="false" enabled="false">
                 <handlers>
@@ -115,16 +115,12 @@
                 <pattern-formatter pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
             </formatter>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:deployment-scanner:2.0">
-            <deployment-scanner path="deployments" relative-to="jboss.server.base.dir" scan-interval="5000"
-                                runtime-failure-causes-rollback="${jboss.deployment.scanner.rollback.on.failure:false}"/>
-        </subsystem>
         <subsystem xmlns="urn:jboss:domain:bean-validation:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:4.0">
             <datasources>
                 <datasource jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS"
-                            enabled="true"
-                            use-java-context="true">
+                        enabled="true"
+                        use-java-context="true">
                     <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
                     <driver>h2</driver>
                     <security>
@@ -133,66 +129,70 @@
                     </security>
                 </datasource>
                 <ds:datasource xmlns:ds="urn:jboss:domain:datasources:4.0" xmlns=""
-                               jndi-name="java:jboss/datasources/KeycloakDS"
-                               pool-name="KeycloakDS"
-                               enabled="true"
-                               use-java-context="true"
-                               use-ccm="true">
-                    <ds:connection-url>jdbc:mysql://${env.MYSQL_PORT_3306_TCP_ADDR}:${env.MYSQL_PORT_3306_TCP_PORT}/${env.MYSQL_DATABASE:keycloak}</ds:connection-url>
-                    <ds:driver>mysql</ds:driver>
-                    <ds:security>
-                        <ds:user-name>${env.MYSQL_USERNAME:keycloak}</ds:user-name>
-                        <ds:password>${env.MYSQL_PASSWORD:password}</ds:password>
-                    </ds:security>
-                    <ds:validation>
-                        <ds:check-valid-connection-sql>SELECT 1</ds:check-valid-connection-sql>
-                        <ds:background-validation>true</ds:background-validation>
-                        <ds:background-validation-millis>60000</ds:background-validation-millis>
-                    </ds:validation>
-                    <ds:pool>
-                        <ds:flush-strategy>IdleConnections</ds:flush-strategy>
-                    </ds:pool>
-                </ds:datasource>
+                           jndi-name="java:jboss/datasources/KeycloakDS"
+                           pool-name="KeycloakDS"
+                           enabled="true"
+                           use-java-context="true"
+                           use-ccm="true">
+               <ds:connection-url>jdbc:mysql://${env.MYSQL_PORT_3306_TCP_ADDR}:${env.MYSQL_PORT_3306_TCP_PORT}/${env.MYSQL_DATABASE:keycloak}</ds:connection-url>
+               <ds:driver>mysql</ds:driver>
+               <ds:security>
+                  <ds:user-name>${env.MYSQL_USERNAME:keycloak}</ds:user-name>
+                  <ds:password>${env.MYSQL_PASSWORD:password}</ds:password>
+               </ds:security>
+               <ds:validation>
+                  <ds:check-valid-connection-sql>SELECT 1</ds:check-valid-connection-sql>
+                  <ds:background-validation>true</ds:background-validation>
+                  <ds:background-validation-millis>60000</ds:background-validation-millis>
+               </ds:validation>
+               <ds:pool>
+                  <ds:flush-strategy>IdleConnections</ds:flush-strategy>
+               </ds:pool>
+            </ds:datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
                     </driver>
-                    <ds:driver xmlns:ds="urn:jboss:domain:datasources:4.0" xmlns="" name="mysql"
-                               module="com.mysql.jdbc">
-                        <ds:xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</ds:xa-datasource-class>
-                    </ds:driver>
-                </drivers>
+                <ds:driver xmlns:ds="urn:jboss:domain:datasources:4.0" xmlns="" name="mysql"
+                          module="com.mysql.jdbc">
+                  <ds:xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</ds:xa-datasource-class>
+               </ds:driver>
+            </drivers>
             </datasources>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:deployment-scanner:2.0">
+            <deployment-scanner path="deployments" relative-to="jboss.server.base.dir" scan-interval="5000"
+                             runtime-failure-causes-rollback="${jboss.deployment.scanner.rollback.on.failure:false}"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:ee:4.0">
             <spec-descriptor-property-replacement>false</spec-descriptor-property-replacement>
             <concurrent>
                 <context-services>
                     <context-service name="default" jndi-name="java:jboss/ee/concurrency/context/default"
-                                     use-transaction-setup-provider="true"/>
+                                use-transaction-setup-provider="true"/>
                 </context-services>
                 <managed-thread-factories>
                     <managed-thread-factory name="default" jndi-name="java:jboss/ee/concurrency/factory/default"
-                                            context-service="default"/>
+                                       context-service="default"/>
                 </managed-thread-factories>
                 <managed-executor-services>
                     <managed-executor-service name="default" jndi-name="java:jboss/ee/concurrency/executor/default"
-                                              context-service="default"
-                                              hung-task-threshold="60000"
-                                              keepalive-time="5000"/>
+                                         context-service="default"
+                                         hung-task-threshold="60000"
+                                         keepalive-time="5000"/>
                 </managed-executor-services>
                 <managed-scheduled-executor-services>
                     <managed-scheduled-executor-service name="default" jndi-name="java:jboss/ee/concurrency/scheduler/default"
-                                                        context-service="default"
-                                                        hung-task-threshold="60000"
-                                                        keepalive-time="3000"/>
+                                                   context-service="default"
+                                                   hung-task-threshold="60000"
+                                                   keepalive-time="3000"/>
                 </managed-scheduled-executor-services>
             </concurrent>
             <default-bindings context-service="java:jboss/ee/concurrency/context/default"
-                              datasource="java:jboss/datasources/ExampleDS"
-                              managed-executor-service="java:jboss/ee/concurrency/executor/default"
-                              managed-scheduled-executor-service="java:jboss/ee/concurrency/scheduler/default"
-                              managed-thread-factory="java:jboss/ee/concurrency/factory/default"/>
+                           datasource="java:jboss/datasources/ExampleDS"
+                           managed-executor-service="java:jboss/ee/concurrency/executor/default"
+                           managed-scheduled-executor-service="java:jboss/ee/concurrency/scheduler/default"
+                           managed-thread-factory="java:jboss/ee/concurrency/factory/default"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:ejb3:4.0">
             <session-bean>
@@ -200,24 +200,24 @@
                     <bean-instance-pool-ref pool-name="slsb-strict-max-pool"/>
                 </stateless>
                 <stateful default-access-timeout="5000" cache-ref="distributable"
-                          passivation-disabled-cache-ref="simple"/>
+                      passivation-disabled-cache-ref="simple"/>
                 <singleton default-access-timeout="5000"/>
             </session-bean>
             <pools>
                 <bean-instance-pools>
                     <!-- Automatically configure pools. Alternatively, max-pool-size can be set to a specific value -->
                     <strict-max-pool name="slsb-strict-max-pool" derive-size="from-worker-pools"
-                                     instance-acquisition-timeout="5"
-                                     instance-acquisition-timeout-unit="MINUTES"/>
+                                instance-acquisition-timeout="5"
+                                instance-acquisition-timeout-unit="MINUTES"/>
                     <strict-max-pool name="mdb-strict-max-pool" derive-size="from-cpu-count"
-                                     instance-acquisition-timeout="5"
-                                     instance-acquisition-timeout-unit="MINUTES"/>
+                                instance-acquisition-timeout="5"
+                                instance-acquisition-timeout-unit="MINUTES"/>
                 </bean-instance-pools>
             </pools>
             <caches>
                 <cache name="simple"/>
                 <cache name="distributable" passivation-store-ref="infinispan"
-                       aliases="passivating clustered"/>
+                   aliases="passivating clustered"/>
             </caches>
             <passivation-stores>
                 <passivation-store name="infinispan" cache-container="ejb" max-size="10000"/>
@@ -226,7 +226,7 @@
             <timer-service thread-pool-name="default" default-data-store="default-file-store">
                 <data-stores>
                     <file-data-store name="default-file-store" path="timer-service-data"
-                                     relative-to="jboss.server.data.dir"/>
+                                relative-to="jboss.server.data.dir"/>
                 </data-stores>
             </timer-service>
             <remote connector-ref="http-remoting-connector" thread-pool-name="default"/>
@@ -247,18 +247,24 @@
         <subsystem xmlns="urn:jboss:domain:infinispan:4.0">
             <cache-container name="keycloak" jndi-name="infinispan/Keycloak">
                 <transport lock-timeout="60000"/>
-                <invalidation-cache name="realms" mode="SYNC"/>
-                <invalidation-cache name="users" mode="SYNC">
+                <local-cache name="realms">
                     <eviction max-entries="10000" strategy="LRU"/>
-                </invalidation-cache>
+                </local-cache>
+                <local-cache name="users">
+                    <eviction max-entries="10000" strategy="LRU"/>
+                </local-cache>
                 <distributed-cache name="sessions" mode="SYNC" owners="1"/>
                 <distributed-cache name="offlineSessions" mode="SYNC" owners="1"/>
                 <distributed-cache name="loginFailures" mode="SYNC" owners="1"/>
                 <distributed-cache name="authorization" mode="SYNC" owners="1"/>
                 <replicated-cache name="work" mode="SYNC"/>
+                <local-cache name="keys">
+                    <eviction max-entries="1000" strategy="LRU"/>
+                    <expiration max-idle="3600000"/>
+                </local-cache>
             </cache-container>
             <cache-container name="server" aliases="singleton cluster" default-cache="default"
-                             module="org.wildfly.clustering.server">
+                          module="org.wildfly.clustering.server">
                 <transport lock-timeout="60000"/>
                 <replicated-cache name="default" mode="SYNC">
                     <transaction mode="BATCH"/>
@@ -273,7 +279,7 @@
                 </distributed-cache>
             </cache-container>
             <cache-container name="ejb" aliases="sfsb" default-cache="dist"
-                             module="org.wildfly.clustering.ejb.infinispan">
+                          module="org.wildfly.clustering.ejb.infinispan">
                 <transport lock-timeout="60000"/>
                 <distributed-cache name="dist" mode="ASYNC" l1-lifespan="0" owners="2">
                     <locking isolation="REPEATABLE_READ"/>
@@ -283,15 +289,15 @@
             </cache-container>
             <cache-container name="hibernate" default-cache="local-query" module="org.hibernate.infinispan">
                 <transport lock-timeout="60000"/>
+                <local-cache name="local-query">
+                    <eviction strategy="LRU" max-entries="10000"/>
+                    <expiration max-idle="100000"/>
+                </local-cache>
                 <invalidation-cache name="entity" mode="SYNC">
                     <transaction mode="NON_XA"/>
                     <eviction strategy="LRU" max-entries="10000"/>
                     <expiration max-idle="100000"/>
                 </invalidation-cache>
-                <local-cache name="local-query">
-                    <eviction strategy="LRU" max-entries="10000"/>
-                    <expiration max-idle="100000"/>
-                </local-cache>
                 <replicated-cache name="timestamps" mode="ASYNC"/>
             </cache-container>
         </subsystem>
@@ -379,7 +385,7 @@
         <subsystem xmlns="urn:jboss:domain:remoting:3.0">
             <endpoint/>
             <http-connector name="http-remoting-connector" connector-ref="default"
-                            security-realm="ApplicationRealm"/>
+                         security-realm="ApplicationRealm"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:request-controller:1.0"/>
         <subsystem xmlns="urn:jboss:domain:security-manager:1.0">
@@ -428,7 +434,7 @@
                 </process-id>
             </core-environment>
             <recovery-environment socket-binding="txn-recovery-environment"
-                                  status-socket-binding="txn-status-manager"/>
+                               status-socket-binding="txn-status-manager"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:undertow:3.0">
             <buffer-cache name="default"/>
@@ -467,29 +473,16 @@
                 <dir>${jboss.home.dir}/themes</dir>
             </theme>
             <spi name="eventsStore">
-                <default-provider>jpa</default-provider>
                 <provider name="jpa" enabled="true">
                     <properties>
                         <property name="exclude-events" value="[&#34;REFRESH_TOKEN&#34;]"/>
                     </properties>
                 </provider>
             </spi>
-            <spi name="realm">
-                <default-provider>jpa</default-provider>
-            </spi>
-            <spi name="user">
-                <default-provider>jpa</default-provider>
-            </spi>
-            <spi name="userFederatedStorage">
-                <default-provider>jpa</default-provider>
-            </spi>
             <spi name="userCache">
                 <provider name="default" enabled="true"/>
             </spi>
             <spi name="userSessionPersister">
-                <default-provider>jpa</default-provider>
-            </spi>
-            <spi name="authorizationPersister">
                 <default-provider>jpa</default-provider>
             </spi>
             <spi name="timer">
@@ -523,6 +516,13 @@
                 <default-provider>${keycloak.jta.lookup.provider:jboss}</default-provider>
                 <provider name="jboss" enabled="true"/>
             </spi>
+            <spi name="publicKeyStorage">
+                <provider name="infinispan" enabled="true">
+                    <properties>
+                        <property name="minTimeBetweenRequests" value="10"/>
+                    </properties>
+                </provider>
+            </spi>
         </subsystem>
     </profile>
     <interfaces>
@@ -537,25 +537,25 @@
         </interface>
     </interfaces>
     <socket-binding-group name="standard-sockets" default-interface="public"
-                          port-offset="${jboss.socket.binding.port-offset:0}">
+                         port-offset="${jboss.socket.binding.port-offset:0}">
         <socket-binding name="management-http" interface="management"
-                        port="${jboss.management.http.port:9990}"/>
+                      port="${jboss.management.http.port:9990}"/>
         <socket-binding name="management-https" interface="management"
-                        port="${jboss.management.https.port:9993}"/>
+                      port="${jboss.management.https.port:9993}"/>
         <socket-binding name="ajp" port="${jboss.ajp.port:8009}"/>
         <socket-binding name="http" port="${jboss.http.port:8080}"/>
         <socket-binding name="https" port="${jboss.https.port:8443}"/>
         <socket-binding name="jgroups-mping" interface="private" port="0"
-                        multicast-address="${jboss.default.multicast.address:230.0.0.4}"
-                        multicast-port="45700"/>
+                      multicast-address="${jboss.default.multicast.address:230.0.0.4}"
+                      multicast-port="45700"/>
         <socket-binding name="jgroups-tcp" interface="private" port="7600"/>
         <socket-binding name="jgroups-tcp-fd" interface="private" port="57600"/>
         <socket-binding name="jgroups-udp" interface="private" port="55200"
-                        multicast-address="${jboss.default.multicast.address:230.0.0.4}"
-                        multicast-port="45688"/>
+                      multicast-address="${jboss.default.multicast.address:230.0.0.4}"
+                      multicast-port="45688"/>
         <socket-binding name="jgroups-udp-fd" interface="private" port="54200"/>
         <socket-binding name="modcluster" port="0" multicast-address="224.0.1.105"
-                        multicast-port="23364"/>
+                      multicast-port="23364"/>
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
         <outbound-socket-binding name="mail-smtp">

@@ -3,7 +3,7 @@
     <parent>
         <artifactId>keycloak-parent</artifactId>
         <groupId>org.keycloak</groupId>
-        <version>2.2.1.Final</version>
+        <version>3.0.0.Final</version>
     </parent>
 
     <name>Cyclone Client-Owner provider</name>
