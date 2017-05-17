@@ -1,5 +1,5 @@
 sudo: required
-
+dist: trusty
 language: java
 
 cache:
@@ -19,7 +19,6 @@ jobs:
       script:
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
         - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-mysql .
-        - ls -a
         - if [ "$TRAVIS_BRANCH" == "master" ]; then
             docker push cycloneproject/keycloak-mysql;
           fi
@@ -27,7 +26,6 @@ jobs:
     - script:
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
         - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-mysql:test .
-        - ls -a
         - if [ "$TRAVIS_BRANCH" == "master" ]; then
             docker push cycloneproject/keycloak-mysql;
           fi
