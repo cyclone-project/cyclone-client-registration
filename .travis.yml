@@ -19,9 +19,9 @@ jdk:
 
 jobs:
   include:
-    - stage: build docker images
       before_script:
         - export MAVEN_SKIP_RC=true
+    - stage: build docker images
       script:
         - export MAVEN_SKIP_RC=true
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
@@ -30,6 +30,11 @@ jobs:
         - if [ "$TRAVIS_BRANCH" == "master" ]; then
             docker push cycloneproject/keycloak-mysql;
           fi
-    - stage: test
-      script: docker run --rm $DOCKER_USERNAME/travis-ci-build-stages-demo cat hello.txt
-    - script: docker run --rm $DOCKER_USERNAME/travis-ci-build-stages-demo cat hello.txt
+    - script:
+        - export MAVEN_SKIP_RC=true
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+        - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-mysql:test .
+        - mvn install -Pdistribution -DskipTests=true -B -V -q
+        - if [ "$TRAVIS_BRANCH" == "master" ]; then
+            docker push cycloneproject/keycloak-mysql;
+          fi
