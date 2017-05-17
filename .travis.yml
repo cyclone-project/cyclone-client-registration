@@ -19,8 +19,8 @@ jdk:
 
 jobs:
   include:
-      before_script:
-        - export MAVEN_SKIP_RC=true
+    before_script:
+      - export MAVEN_SKIP_RC=true
     - stage: build docker images
       script:
         - export MAVEN_SKIP_RC=true
