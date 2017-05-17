@@ -10,6 +10,8 @@ env:
     - MAVEN_SKIP_RC=true
     - MAVEN_OPTS="-Xms512m -Xmx2048m"
 jdk: oraclejdk8
+services:
+  - docker
 
 jobs:
   include:
@@ -18,16 +20,16 @@ jobs:
         - docker
       script:
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-mysql .
+        - docker build --file=distribution/Dockerfile.mysql -t cycloneproject/keycloak-mysql .
         - if [ "$TRAVIS_BRANCH" == "master" ]; then
             docker push cycloneproject/keycloak-mysql;
           fi
       jdk: oraclejdk8
     - script:
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-postgres .
+        - docker build --file=distribution/Dockerfile.postgres -t cycloneproject/keycloak-postgres .
         - if [ "$TRAVIS_BRANCH" == "master" ]; then
-            docker push cycloneproject/keycloak-mysql;
+            docker push cycloneproject/keycloak-postgres;
           fi
       services:
         - docker
