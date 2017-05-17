@@ -25,7 +25,7 @@ jobs:
       jdk: oraclejdk8
     - script:
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-mysql:test .
+        - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-postgres .
         - if [ "$TRAVIS_BRANCH" == "master" ]; then
             docker push cycloneproject/keycloak-mysql;
           fi
