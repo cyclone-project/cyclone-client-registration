@@ -17,18 +17,19 @@ services:
 jdk:
   - oraclejdk8
 
-before_install:
-  - docker pull jboss/keycloak-mysql
-
-install:
-  - travis_wait 60 mvn install -Pdistribution -DskipTests=true -B -V -q
-  - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-mysql .
-
-before_script:
-  - export MAVEN_SKIP_RC=true
-
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push cycloneproject/keycloak-mysql;
-    fi
+jobs:
+  include:
+    - stage: build docker images
+      before_script:
+        - export MAVEN_SKIP_RC=true
+      script:
+        - export MAVEN_SKIP_RC=true
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+        - docker build --file=distribution/Dockerfile -t cycloneproject/keycloak-mysql .
+        - mvn install -Pdistribution -DskipTests=true -B -V -q
+        - if [ "$TRAVIS_BRANCH" == "master" ]; then
+            docker push cycloneproject/keycloak-mysql;
+          fi
+    - stage: test
+      script: docker run --rm $DOCKER_USERNAME/travis-ci-build-stages-demo cat hello.txt
+    - script: docker run --rm $DOCKER_USERNAME/travis-ci-build-stages-demo cat hello.txt
